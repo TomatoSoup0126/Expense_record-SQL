@@ -1,0 +1,42 @@
+<div class="container mt-3">
+  <div class="row mt-5">
+    <div class="col-md-6 m-auto">
+      <div class="card card-body">
+        <h5 class="text-center mb-3">請輸入你的支出</h5>
+        <h6>* 必填欄位</h6>
+
+        <form action="/records/{{{record.id}}}?_method=PUT" method="POST">
+          <div class="form-group">
+            <label for="name">名稱 *</label>
+            <input type="text" id="name" name="name" class="form-control" placeholder="請輸入支出品項"
+              value="{{{record.name}}}" />
+          </div>
+          <div class=" form-group">
+            <label for="date">日期 *</label>
+            <input type="date" id="date" name="date" class="form-control" value="{{{date}}}" />
+          </div>
+          <div class="form-group">
+            <label for="category">類別 *</label>
+            <select class="custom-select" id="category" name="category">
+              <option>選擇類別...</option>
+              <option value="houseware" {{#if_equal record.category "houseware"}}selected{{/if_equal}}>家居物業</option>
+              <option value="traffic" {{#if_equal record.category "traffic"}}selected{{/if_equal}}>交通出行</option>
+              <option value="entertainment" {{#if_equal record.category "entertainment"}}selected{{/if_equal}}>休閒娛樂
+              </option>
+              <option value="food" {{#if_equal record.category "food"}}selected{{/if_equal}}>餐飲食品</option>
+              <option value="other" {{#if_equal record.category "other"}}selected{{/if_equal}}>其他</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="amount">金額 *</label>
+            <input type="number" id="amount" name="amount" class="form-control" placeholder="請輸入支出金額"
+              value="{{{record.amount}}}" />
+          </div>
+
+          <button type=" submit" class="btn btn-primary btn-block mt-4">修改支出</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
