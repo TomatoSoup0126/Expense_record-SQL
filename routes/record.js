@@ -7,6 +7,8 @@ const Record = db.Record
 
 const { authenticated } = require('../config/auth')
 
+
+
 // 新增一筆 Record 頁面
 router.get('/new', authenticated, (req, res) => {
   return res.render('new')
@@ -18,10 +20,11 @@ router.post('/', authenticated, (req, res) => {
     name: req.body.name,
     date: req.body.date,
     category: req.body.category,
+    merchant: req.body.merchant,
     amount: req.body.amount,
-    userId: req.user._id
+    UserId: req.user.id
   })
-    .then((Record) => { return res.redirect('/') })
+    .then((record) => { return res.redirect('/') })
     .catch((error) => { return res.status(422).json(error) })
 })
 

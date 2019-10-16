@@ -1,42 +1,66 @@
 <div class="container mt-3">
   <div class="d-flex justify-content-between">
-    <div></div>
-    {{#if category}}
-    <h2>{{category}}的總花費：${{totalAmount}}</h2>
+
+
+    {{#if duoQuery}}
+    <h2>{{duoQuery}}總花費：
+      <span class="text-warning h2">${{totalAmount}}</span>
+    </h2>
     {{else}}
-    <h2>總花費：${{totalAmount}}</h2>
+    <h2>{{category}}{{month}} 總花費：
+      <span class="text-warning h2">${{totalAmount}}</span>
+    </h2>
     {{/if}}
+
     <div class="d-flex">
-      <a href="/records/new" class="mr-2">
-        <button type="button" class="btn btn-secondary">新增支出</button>
+      <a href="/records/new" class="mr-2 mt-2">
+        <button type="button" class="btn btn-warning"><i class="fas fa-plus"></i> 新增支出</button>
       </a>
-      <div class="dropdown">
+      <div class="dropdown mr-2 mt-2">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
           篩選類別
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <a class="dropdown-item" href="/">全部</a>
-          <a class="dropdown-item" href="/?category=houseware">家居物業</a>
-          <a class="dropdown-item" href="/?category=traffic">交通出行</a>
-          <a class="dropdown-item" href="/?category=entertainment">休閒娛樂</a>
-          <a class="dropdown-item" href="/?category=food">餐飲食品</a>
-          <a class="dropdown-item" href="/?category=other">其他</a>
+          <a class="dropdown-item" href="/?category=houseware&month={{monthQuery}}">家居物業</a>
+          <a class="dropdown-item" href="/?category=traffic&month={{monthQuery}}">交通出行</a>
+          <a class="dropdown-item" href="/?category=entertainment&month={{monthQuery}}">休閒娛樂</a>
+          <a class="dropdown-item" href="/?category=food&month={{monthQuery}}">餐飲食品</a>
+          <a class="dropdown-item" href="/?category=other&month={{monthQuery}}">其他</a>
         </div>
       </div>
-
+      <div class="dropdown mt-2">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          篩選月份
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" href="/">全部</a>
+          <a class="dropdown-item" href="/?month=1&category={{categoryQuery}}">1月</a>
+          <a class="dropdown-item" href="/?month=2&category={{categoryQuery}}">2月</a>
+          <a class="dropdown-item" href="/?month=3&category={{categoryQuery}}">3月</a>
+          <a class="dropdown-item" href="/?month=4&category={{categoryQuery}}">4月</a>
+          <a class="dropdown-item" href="/?month=5&category={{categoryQuery}}">5月</a>
+          <a class="dropdown-item" href="/?month=6&category={{categoryQuery}}">6月</a>
+          <a class="dropdown-item" href="/?month=7&category={{categoryQuery}}">7月</a>
+          <a class="dropdown-item" href="/?month=8&category={{categoryQuery}}">8月</a>
+          <a class="dropdown-item" href="/?month=9&category={{categoryQuery}}">9月</a>
+          <a class="dropdown-item" href="/?month=10&category={{categoryQuery}}">10月</a>
+          <a class="dropdown-item" href="/?month=11&category={{categoryQuery}}">11月</a>
+          <a class="dropdown-item" href="/?month=12&category={{categoryQuery}}">12月</a>
+        </div>
+      </div>
     </div>
   </div>
 
 
-
-
-  <table class="table table-hover table-striped mt-3">
+  {{#if records}}
+  <table class="table table-hover table-striped mt-3 col-xs-11 col-md-10 col-lg-7 mx-auto">
     <thead>
       <tr>
         <th scope="col" class="text-center">類別</th>
         <th scope="col" class="text-left">項目</th>
-        <th scope="col" class="text-left">商家</th>
         <th scope="col" class="text-right">金額</th>
         <th scope="col" class="text-center"></th>
         <th scope="col" class="text-center"></th>
@@ -52,14 +76,12 @@
         </th>
         <td class="text-left">
           <h4>{{this.name}}</h4>
-          <div>{{this.formatDate}}</div>
+          <div>{{this.formatDate}}
+            {{#if this.merchant}}
+            <span class="ml-2"><i class="fas fa-at"></i> {{{this.merchant}}}</span>
+            {{/if}}
+          </div>
         </td>
-
-        <th scope="row" class="text-left">
-          <h4 class="mt-3">
-            {{{this.merchant}}}
-          </h4>
-        </th>
 
         <td class="text-right">
           <h4 class="mt-3">
@@ -76,23 +98,24 @@
         <td class="text-left">
           <!-- Button trigger modal -->
           <button type="button" class="btn btn-outline-danger font-weight-normal mt-2" data-toggle="modal"
-            data-target="#{{this.name}}Modal">
+            data-target="#modalOf{{this.name}}">
             <i class="far fa-trash-alt" aria-hidden="true"></i>
           </button>
 
           <!-- Modal -->
-          <div class="modal fade" id="{{this.name}}Modal" tabindex="-1" role="dialog"
-            aria-labelledby="{{this.name}}ModalLabel" aria-hidden="true">
+          <div class="modal fade" id="modalOf{{this.name}}" tabindex="-1" role="dialog"
+            aria-labelledby="modalLabel{{this.name}}" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="{{this.name}}ModalLabel">刪除確認</h5>
+                  <h5 class="modal-title" id="modalLabel{{this.name}}">刪除確認</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
                 <div class="modal-body">
-                  你真的要刪除 {{this.name}} 這筆資料嗎？
+                  你真的要刪除
+                  <span class="text-danger h5"> {{this.name}} </span>這筆資料嗎？
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
@@ -109,6 +132,11 @@
       {{/each}}
     </tbody>
   </table>
+  {{else}}
+  <div class="mx-auto col-10">
+    <img src="/img/oops.png" class="rounded img-fluid" alt="No records">
+  </div>
 
+  {{/if}}
 
 </div>
