@@ -1,6 +1,9 @@
 const express = require('express')
 const router = express.Router()
 
+const sequelize = require('sequelize')
+const Op = sequelize.Op
+
 const db = require('../models')
 const User = db.User
 const Record = db.Record
@@ -42,52 +45,40 @@ const month2chinese = {
 
 const monthRange = {
   "1": {
-    $gte: new Date('2019-01-01'),
-    $lte: new Date('2019-01-31')
+    [Op.between]: ["2019-01-01", "2019-01-31"]
   },
   "2": {
-    $gte: new Date('2019-02-01'),
-    $lte: new Date('2019-02-28')
+    [Op.between]: ["2019-02-01", "2019-02-28"]
   },
   "3": {
-    $gte: new Date('2019-03-01'),
-    $lte: new Date('2019-03-31')
+    [Op.between]: ["2019-03-01", "2019-03-31"]
   },
   "4": {
-    $gte: new Date('2019-04-01'),
-    $lte: new Date('2019-04-30')
+    [Op.between]: ["2019-04-01", "2019-04-30"]
   },
   "5": {
-    $gte: new Date('2019-05-01'),
-    $lte: new Date('2019-05-31')
+    [Op.between]: ["2019-05-01", "2019-05-31"]
   },
   "6": {
-    $gte: new Date('2019-06-01'),
-    $lte: new Date('2019-06-30')
+    [Op.between]: ["2019-06-01", "2019-06-30"]
   },
   "7": {
-    $gte: new Date('2019-07-01'),
-    $lte: new Date('2019-07-31')
+    [Op.between]: ["2019-07-01", "2019-07-31"]
   },
   "8": {
-    $gte: new Date('2019-08-01'),
-    $lte: new Date('2019-08-31')
+    [Op.between]: ["2019-08-01", "2019-08-31"]
   },
   "9": {
-    $gte: new Date('2019-09-01'),
-    $lte: new Date('2019-09-30')
+    [Op.between]: ["2019-09-01", "2019-09-30"]
   },
   "10": {
-    $gte: new Date('2019-10-01'),
-    $lte: new Date('2019-10-31')
+    [Op.between]: ["2019-10-01", "2019-10-31"]
   },
   "11": {
-    $gte: new Date('2019-11-01'),
-    $lte: new Date('2019-11-30')
+    [Op.between]: ["2019-11-01", "2019-11-30"]
   },
   "12": {
-    $gte: new Date('2019-12-01'),
-    $lte: new Date('2019-12-31')
+    [Op.between]: ["2019-12-01", "2019-12-31"]
   },
 }
 
@@ -114,7 +105,7 @@ router.get('/', authenticated, (req, res) => {
   if (req.query.category && req.query.month) {
     duoQuery = `${month2chinese[month]} ＆ ${category2chinese[category]} 的`
   }
-
+  console.log(filterObject)
   User.findByPk(user.id)
     .then((user) => {
       if (!user) throw new Error("user not found")
