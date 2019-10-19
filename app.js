@@ -45,11 +45,13 @@ app.use((req, res, next) => {
   next()
 })
 
+app.use(express.static('public'))
 
 // 設定路由
 app.use('/', require('./routes/home'))
 app.use('/records', require('./routes/record'))
 app.use('/users', require('./routes/user'))
+
 
 
 
