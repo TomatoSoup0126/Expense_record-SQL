@@ -30,12 +30,12 @@ app.use(session({
   resave: 'false',
   saveUninitialized: 'false',
 }))
-app.use(passport.initialize())
-app.use(passport.session())
-
-require('./config/passport')(passport)
 
 app.use(flash())
+
+app.use(passport.initialize())
+app.use(passport.session())
+require('./config/passport')(passport)
 
 app.use((req, res, next) => {
   res.locals.user = req.user
