@@ -11,6 +11,10 @@ const passport = require('passport')
 
 const port = 3000
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 Handlebars.registerHelper('if_equal', function (item, expectedItem, options) {
   if (item === expectedItem) {
     return options.fn(this);
@@ -51,6 +55,7 @@ app.use(express.static('public'))
 app.use('/', require('./routes/home'))
 app.use('/records', require('./routes/record'))
 app.use('/users', require('./routes/user'))
+app.use('/auth', require('./routes/auths'))
 
 
 
