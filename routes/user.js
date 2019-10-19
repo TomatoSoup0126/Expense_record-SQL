@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('passport')
+const bcrypt = require('bcryptjs')
 
 // 載入 user model
 const db = require('../models')
@@ -28,29 +29,57 @@ router.get('/register', (req, res) => {
 // 註冊檢查
 router.post('/register', (req, res) => {
   const { name, email, password, password2 } = req.body
-  User.findOne({ where: { email: email } }).then(user => {
-    if (user) {
-      console.log('User already exists')
-      res.render('register', {
-        name,
-        email,
-        password,
-        password2
-      })
-    } else {
-      const newUser = new User({  //  如果 email 不存在就直接新增
-        name,
-        email,
-        password,
-      })
-      newUser
-        .save()
-        .then(user => {
-          res.redirect('/')                   // 新增完成導回首頁
+
+  let errors = []
+
+  if (!name || !email || !password || !password2) {
+    errors.push({ message: '所有欄位都是必填' })
+  }
+
+  if (password !== password2) {
+    errors.push({ message: '密碼輸入錯誤' })
+  }
+
+  if (errors.length > 0) {
+    res.render('register', {
+      errors,
+      name,
+      email,
+      password,
+      password2
+    })
+  } else {
+    User.findOne({ where: { email: email } }).then(user => {
+      if (user) {
+        console.log('User already exists')
+        res.render('register', {
+          name,
+          email,
+          password,
+          password2
         })
-        .catch(err => console.log(err))
-    }
-  })
+      } else {
+        const newUser = new User({  //  如果 email 不存在就直接新增
+          name,
+          email,
+          password,
+        })
+        bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.hash(newUser.password, salt, (err, hash) => {
+            if (err) throw err
+            newUser.password = hash
+
+            newUser
+              .save()
+              .then(user => {
+                res.redirect('/')                   // 新增完成導回首頁
+              })
+              .catch(err => console.log(err))
+          })
+        })
+      }
+    })
+  }
 })
 
 // 登出
