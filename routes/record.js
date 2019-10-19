@@ -31,6 +31,7 @@ router.post('/', authenticated, (req, res) => {
 
 // 修改 Record 頁面
 router.get('/:id/edit', authenticated, (req, res) => {
+  console.log('req.params.id', req.params.id)
   User.findByPk(req.user.id)
     .then((user) => {
       if (!user) throw new Error("user not found")
@@ -42,7 +43,6 @@ router.get('/:id/edit', authenticated, (req, res) => {
       })
     })
     .then((record) => {
-      if (err) return console.error(err)
       let time = record.date
       let year = time.getFullYear()
       let month = time.getMonth() + 1
@@ -54,6 +54,7 @@ router.get('/:id/edit', authenticated, (req, res) => {
 
       return res.render('edit', { record: record, date: date })
     })
+    .catch((error) => { return res.status(422).json(error) })
 })
 
 
@@ -69,6 +70,7 @@ router.put('/:id', authenticated, (req, res) => {
       record.name = req.body.name
       record.date = req.body.date
       record.category = req.body.category
+      record.merchant = req.body.merchant
       record.amount = req.body.amount
 
       return record.save()
