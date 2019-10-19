@@ -16,22 +16,40 @@ router.get('/new', authenticated, (req, res) => {
 
 // 新增一筆  Record
 router.post('/', authenticated, (req, res) => {
-  Record.create({
-    name: req.body.name,
-    date: req.body.date,
-    category: req.body.category,
-    merchant: req.body.merchant,
-    amount: req.body.amount,
-    UserId: req.user.id
-  })
-    .then((record) => { return res.redirect('/') })
-    .catch((error) => { return res.status(422).json(error) })
+  const { name, date, category, merchant, amount } = req.body
+
+  let errors = []
+
+  if (!name || !date || !category || !amount) {
+    errors.push({ message: '必填欄位未填' })
+  }
+
+  if (errors.length > 0) {
+    res.render('new', {
+      errors,
+      name,
+      date,
+      category,
+      merchant,
+      amount
+    })
+  } else {
+    Record.create({
+      name: req.body.name,
+      date: req.body.date,
+      category: req.body.category,
+      merchant: req.body.merchant,
+      amount: req.body.amount,
+      UserId: req.user.id
+    })
+      .then((record) => { return res.redirect('/') })
+      .catch((error) => { return res.status(422).json(error) })
+  }
 })
 
 
 // 修改 Record 頁面
 router.get('/:id/edit', authenticated, (req, res) => {
-  console.log('req.params.id', req.params.id)
   User.findByPk(req.user.id)
     .then((user) => {
       if (!user) throw new Error("user not found")
@@ -60,24 +78,37 @@ router.get('/:id/edit', authenticated, (req, res) => {
 
 // 修改 Record
 router.put('/:id', authenticated, (req, res) => {
-  Record.findOne({
-    where: {
-      Id: req.params.id,
-      UserId: req.user.id,
-    }
-  })
-    .then((record) => {
-      record.name = req.body.name
-      record.date = req.body.date
-      record.category = req.body.category
-      record.merchant = req.body.merchant
-      record.amount = req.body.amount
+  const { name, date, category, merchant, amount } = req.body
 
-      return record.save()
+  let errors = []
+
+  if (!name || !date || !category || !amount) {
+    errors.push({ message: '必填欄位未填' })
+  }
+
+  if (errors.length > 0) {
+    const id = req.params.id
+    return res.redirect(`/records/${id}/edit`)
+
+  } else {
+    Record.findOne({
+      where: {
+        Id: req.params.id,
+        UserId: req.user.id,
+      }
     })
-    .then((record) => { return res.redirect('/') })
-    .catch((error) => { return res.status(422).json(error) })
+      .then((record) => {
+        record.name = req.body.name
+        record.date = req.body.date
+        record.category = req.body.category
+        record.merchant = req.body.merchant
+        record.amount = req.body.amount
 
+        return record.save()
+      })
+      .then((record) => { return res.redirect('/') })
+      .catch((error) => { return res.status(422).json(error) })
+  }
 })
 
 

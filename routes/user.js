@@ -16,6 +16,7 @@ router.post('/login', (req, res, next) => {
   passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/users/login',
+    failureFlash: req.flash('warning_msg', '登入失敗，請輸入正確的帳號密碼')
   })(req, res, next)
 })
 
